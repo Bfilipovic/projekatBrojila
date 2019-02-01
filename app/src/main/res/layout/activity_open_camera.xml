@@ -52,5 +52,10 @@
             android:text="Izmeni"
             />
 
+        <TextView
+            android:id="@+id/tvTest"
+            android:layout_width="318dp"
+            android:layout_height="45dp" />
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
