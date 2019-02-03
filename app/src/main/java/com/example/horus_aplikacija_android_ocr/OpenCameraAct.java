@@ -24,6 +24,20 @@ import com.google.android.gms.vision.text.TextRecognizer;
 
 public class OpenCameraAct extends AppCompatActivity {
 
+    private String fixNumbers(String a) {
+        a = a.replaceAll(" ", "");
+        a = a.replaceAll("&", "6");
+        a = a.replaceAll("T", "1");
+        a = a.replaceAll("S", "5");
+        a = a.replaceAll("U", "0");
+        a = a.replaceAll("O", "0");
+        a = a.replaceAll("D", "0");
+        a = a.replaceAll("-", "");
+        a = a.replaceAll("\\.", "");
+        a = a.replaceAll(",", "");
+        return a;
+    }
+
     public static final int CAMERA_REQUEST=9999;
     ImageView image;
     Bitmap bmimage;
@@ -54,9 +68,14 @@ public class OpenCameraAct extends AppCompatActivity {
                     Frame frame = new Frame.Builder().setBitmap(bmimage).build();
                     SparseArray<TextBlock> items = recognizer.detect(frame);
                     StringBuilder sb = new StringBuilder();
+                    Integer tr;
                     for (int i = 0; i < items.size(); i ++) {
                         TextBlock myItem = items.valueAt(i);
-                        sb.append(myItem.getValue());
+                        try {
+                            tr = Integer.parseInt(fixNumbers(myItem.getValue().toString()));
+                            sb.append(tr);
+                        } catch (NumberFormatException e) {
+                        }
                         sb.append('\n');
                     }
                     TextView test = (TextView) findViewById(R.id.tvTest);
