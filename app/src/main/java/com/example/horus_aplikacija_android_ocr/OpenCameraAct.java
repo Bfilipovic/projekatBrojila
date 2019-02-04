@@ -65,24 +65,27 @@ public class OpenCameraAct extends AppCompatActivity {
                 if(!recognizer.isOperational())
                     Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                 else {
+                    Intent goToTarife = new Intent(getApplicationContext(),TarifeAct.class);
                     Frame frame = new Frame.Builder().setBitmap(bmimage).build();
                     SparseArray<TextBlock> items = recognizer.detect(frame);
                     StringBuilder sb = new StringBuilder();
                     Integer tr;
-                    for (int i = 0; i < items.size(); i ++) {
+                    for (Integer i = 0; i < items.size(); i ++) {
                         TextBlock myItem = items.valueAt(i);
                         try {
                             tr = Integer.parseInt(fixNumbers(myItem.getValue().toString()));
                             sb.append(tr);
+                            sb.append("|");
                         } catch (NumberFormatException e) {
                         }
-                        sb.append('\n');
                     }
                     TextView test = (TextView) findViewById(R.id.tvTest);
                     test.setText(sb.toString());
+                    goToTarife.putExtra("tuta", sb.toString());
+
+                    startActivity(goToTarife);
                 }
-                //Intent goToTarife = new Intent(getApplicationContext(),TarifeAct.class);
-                //startActivity(goToTarife);
+
             }
         });
         Button btnEdit= (Button) findViewById(R.id.btnEdit);
