@@ -12,9 +12,9 @@ public class TarifeAct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String prvi = "", drugi = "", kurcekanja[];
-        kurcekanja = getIntent().getStringExtra("tuta").split("|");
-        prvi = kurcekanja[1];
-        drugi = kurcekanja[2];
+        kurcekanja = getIntent().getStringExtra("tuta").split(",");
+        prvi = kurcekanja[0];
+        drugi = kurcekanja[1];
         Toast.makeText(getApplicationContext(), prvi.toString() + " " + drugi.toString(), Toast.LENGTH_LONG).show();
 
         setContentView(R.layout.activity_tarife);

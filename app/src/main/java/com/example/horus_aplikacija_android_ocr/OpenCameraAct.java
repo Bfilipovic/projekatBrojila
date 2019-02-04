@@ -75,7 +75,7 @@ public class OpenCameraAct extends AppCompatActivity {
                         try {
                             tr = Integer.parseInt(fixNumbers(myItem.getValue().toString()));
                             sb.append(tr);
-                            sb.append("|");
+                            sb.append(",");
                         } catch (NumberFormatException e) {
                         }
                     }
