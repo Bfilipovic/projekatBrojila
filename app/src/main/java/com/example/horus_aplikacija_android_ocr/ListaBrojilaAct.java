@@ -26,7 +26,7 @@ public class ListaBrojilaAct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_brojila);
         LinearLayout llDugmad = findViewById(R.id.llDugmad);
-        for(i = 2; i <= 5; i ++) {
+        for(i = 1; i <= 5; i ++) {
             Button nb = new Button(getApplicationContext());
             nb.setText(Integer.toString(i));
             nb.setId(i);
