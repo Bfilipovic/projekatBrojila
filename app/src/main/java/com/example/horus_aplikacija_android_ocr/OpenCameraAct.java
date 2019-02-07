@@ -40,10 +40,11 @@ public class OpenCameraAct extends AppCompatActivity {
 
     public static final int CAMERA_REQUEST=9999;
     ImageView image;
-    Bitmap bmimage;
+    Bitmap bmimage = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final int brTarifa = getIntent().getIntExtra("brTarifa", 2);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(this , new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST);
         setContentView(R.layout.activity_open_camera);
@@ -62,10 +63,12 @@ public class OpenCameraAct extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+                Intent goToTarife = new Intent(getApplicationContext(),TarifeAct.class);
+                goToTarife.putExtra("brTarifa", brTarifa);
                 if(!recognizer.isOperational())
                     Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                else {
-                    Intent goToTarife = new Intent(getApplicationContext(),TarifeAct.class);
+                else if(bmimage != null){
+
                     Frame frame = new Frame.Builder().setBitmap(bmimage).build();
                     SparseArray<TextBlock> items = recognizer.detect(frame);
                     StringBuilder sb = new StringBuilder();
@@ -83,6 +86,9 @@ public class OpenCameraAct extends AppCompatActivity {
                     test.setText(sb.toString());
                     goToTarife.putExtra("tuta", sb.toString());
 
+                    startActivity(goToTarife);
+                }
+                else {
                     startActivity(goToTarife);
                 }
 
