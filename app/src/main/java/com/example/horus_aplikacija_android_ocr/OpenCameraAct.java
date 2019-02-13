@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+
+import java.util.HashMap;
 
 
 public class OpenCameraAct extends AppCompatActivity {
@@ -44,7 +47,16 @@ public class OpenCameraAct extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SessionManager sessionManager = new SessionManager(this);
+        sessionManager.checkLogin();
         final int brTarifa = getIntent().getIntExtra("brTarifa", 2);
+        final String deviceId = getIntent().getStringExtra("deviceId");
+
+       HashMap<String,String> mapa = sessionManager.getUserDetail(); //uzima pin trenutno ulogovanog radnika
+        String pin = mapa.get(sessionManager.ID);
+
+
+        //Toast.makeText(getApplicationContext(), pin, Toast.LENGTH_LONG).show();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(this , new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST);
         setContentView(R.layout.activity_open_camera);
@@ -65,6 +77,7 @@ public class OpenCameraAct extends AppCompatActivity {
                 TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
                 Intent goToTarife = new Intent(getApplicationContext(),TarifeAct.class);
                 goToTarife.putExtra("brTarifa", brTarifa);
+                goToTarife.putExtra("deviceId",deviceId);
                 if(!recognizer.isOperational())
                     Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                 else if(bmimage != null){
