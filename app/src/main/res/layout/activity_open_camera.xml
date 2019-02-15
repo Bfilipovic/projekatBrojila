@@ -45,13 +45,6 @@
             android:layout_height="wrap_content"
             android:text="Potvrdi" />
 
-        <Button
-            android:id="@+id/btnEdit"
-            android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            android:text="Izmeni"
-            />
-
         <TextView
             android:id="@+id/tvTest"
             android:layout_width="318dp"

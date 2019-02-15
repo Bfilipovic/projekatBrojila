@@ -79,6 +79,7 @@ public class ListaBrojilaAct extends AppCompatActivity {
                     view.setBackgroundColor(Color.rgb(140, 179, 242));
                 } else {
                     view.setBackgroundColor(Color.WHITE);
+
                     idPritisnut = -1;
                 }
             }

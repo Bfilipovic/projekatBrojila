@@ -14,7 +14,7 @@ public class SessionManager {
     SharedPreferences sharedPreferences;
     public SharedPreferences.Editor editor;
     public Context context;
-    public boolean popunjeni[]=new boolean[500];
+    public String poslenji;
     int PRIVATE_MODE = 0;
 
     private static final String PREF_NAME = "LOGIN";
@@ -56,23 +56,8 @@ public class SessionManager {
         return user;
     }
 
-    public boolean[] getPopunjeni(){
-        return popunjeni;
-    }
 
-    public void setPopunjeni(int i)
-    {
-        popunjeni[i]=true;
-    }
 
-    public void restartPopunjeni(int brUredjaja)
-    {
-        for(int i =0;i<brUredjaja;i++)
-        {
-            popunjeni[i]=false;
-            Toast.makeText(context, ""+i, Toast.LENGTH_LONG).show();
-        }
-    }
 
     public void logout(){
 
