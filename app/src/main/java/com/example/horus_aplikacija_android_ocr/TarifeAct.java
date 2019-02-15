@@ -1,5 +1,6 @@
 package com.example.horus_aplikacija_android_ocr;
 
+import android.app.AlertDialog;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
@@ -19,18 +20,18 @@ public class TarifeAct extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SessionManager sessionManager = new SessionManager(this);
+
+        final SessionManager sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
-        String deviceId = getIntent().getStringExtra("deviceId");
-        Toast.makeText(getApplicationContext(), deviceId, Toast.LENGTH_LONG).show();
-       /* EditText etId = (EditText) findViewById(R.id.tbIdBrojila);
-        etId.setText(deviceId);*/
+
+        final String deviceId = getIntent().getStringExtra("deviceId");
+        final String pozicijaPritisnutog = getIntent().getStringExtra("pozicijaPritisnutog");
+
         String tarife[] = new String[0];
         setContentView(R.layout.activity_tarife);
         LinearLayout llTarife = findViewById(R.id.llTarife);
         final EditText tarifeEt[] = new EditText[5];
         final int brTarifa = getIntent().getIntExtra("brTarifa", 4) - 1;
-        Toast.makeText(getApplicationContext(), Integer.toString(brTarifa), Toast.LENGTH_LONG).show();
         try {
             tarife = getIntent().getStringExtra("tuta").split(",");
         } catch (Exception e) {
@@ -83,11 +84,38 @@ public class TarifeAct extends AppCompatActivity {
                 EditText etId = (EditText) findViewById(R.id.tbIdBrojila);
                 String id = etId.getText().toString();
 
-                backgroundWorker.execute(type,""+brTarifa,tarifeLok[0],tarifeLok[1],tarifeLok[2],tarifeLok[3],tarifeLok[4],id);
+                try {
+                    backgroundWorker.execute(type, "" + brTarifa, tarifeLok[0], tarifeLok[1], tarifeLok[2], tarifeLok[3], tarifeLok[4], id).get();
+
+                    if(backgroundWorker.result.equals("Your update is successful!"))
+                    {
+                        int pozicijaPritisnutogInt = Integer.parseInt(pozicijaPritisnutog);
+                        sessionManager.postaviPoslednjiOcitan(pozicijaPritisnutogInt);
+                        //Toast.makeText(getApplicationContext(), pozicijaPritisnutog+" bulja", Toast.LENGTH_LONG).show();
+
+                    }
+
+                }
+                catch (Exception e)
+                {
+
+                }
             }
 
 
         });
        // Toast.makeText(getApplicationContext(), prvi.toString() + " " + drugi.toString(), Toast.LENGTH_LONG).show();
+        try {
+            //Toast.makeText(getApplicationContext(), deviceId, Toast.LENGTH_LONG).show();
+            EditText etId = (EditText) findViewById(R.id.tbIdBrojila);
+            etId.setText(deviceId,TextView.BufferType.EDITABLE);
+        }
+        catch (Exception e) {
+            AlertDialog alertDialog;
+            alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle("Status");
+            alertDialog.setMessage(e.getMessage());
+            alertDialog.show();
+        }
     }
 }

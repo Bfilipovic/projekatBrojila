@@ -14,12 +14,12 @@ public class SessionManager {
     SharedPreferences sharedPreferences;
     public SharedPreferences.Editor editor;
     public Context context;
-    public String poslenji;
     int PRIVATE_MODE = 0;
 
     private static final String PREF_NAME = "LOGIN";
     private static final String LOGIN = "IS_LOGIN";
     public static final String ID = "ID";
+    public static final String poslednji = "POSLEDNJI";
 
     public SessionManager(Context context) {
         this.context = context;
@@ -33,6 +33,17 @@ public class SessionManager {
         editor.putString(ID, id);
         editor.apply();
 
+    }
+
+    public void postaviPoslednjiOcitan(int pozicijaUListi)
+    {
+        editor.putInt(poslednji,pozicijaUListi);
+        editor.apply();
+    }
+
+    public int getPosljednjiOcitan()
+    {
+        return  sharedPreferences.getInt(poslednji,-1);
     }
 
     public boolean isLoggin(){
@@ -55,7 +66,6 @@ public class SessionManager {
 
         return user;
     }
-
 
 
 

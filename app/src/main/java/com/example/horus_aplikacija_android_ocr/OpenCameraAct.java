@@ -49,14 +49,22 @@ public class OpenCameraAct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         SessionManager sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
-        final int brTarifa = getIntent().getIntExtra("brTarifa", 2);
-        final String deviceId = getIntent().getStringExtra("deviceId");
-
-       HashMap<String,String> mapa = sessionManager.getUserDetail(); //uzima pin trenutno ulogovanog radnika
+        HashMap<String,String> mapa = sessionManager.getUserDetail(); //uzima pin trenutno ulogovanog radnika
         String pin = mapa.get(sessionManager.ID);
 
 
-        //Toast.makeText(getApplicationContext(), pin, Toast.LENGTH_LONG).show();
+        final int brTarifa = getIntent().getIntExtra("brTarifa", 2);
+        final String deviceId = getIntent().getStringExtra("deviceId");
+        final String pozicijaPritisnutog = getIntent().getStringExtra("pozicijaPritisnutog");
+
+
+        final Intent goToTarife = new Intent(getApplicationContext(),TarifeAct.class);
+        goToTarife.putExtra("brTarifa", brTarifa);
+        goToTarife.putExtra("deviceId",deviceId);
+        goToTarife.putExtra("pozicijaPritisnutog", pozicijaPritisnutog);
+        //Toast.makeText(getApplicationContext(), deviceId+" poz: "+pozicijaPritisnutog, Toast.LENGTH_LONG).show();
+
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(this , new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST);
         setContentView(R.layout.activity_open_camera);
@@ -75,9 +83,9 @@ public class OpenCameraAct extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
-                Intent goToTarife = new Intent(getApplicationContext(),TarifeAct.class);
-                goToTarife.putExtra("brTarifa", brTarifa);
-                goToTarife.putExtra("deviceId",deviceId);
+
+
+
                 if(!recognizer.isOperational())
                     Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                 else if(bmimage != null){
@@ -107,14 +115,7 @@ public class OpenCameraAct extends AppCompatActivity {
 
             }
         });
-        Button btnEdit= (Button) findViewById(R.id.btnEdit);
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent goToTarife=new Intent(getApplicationContext(),TarifeAct.class);
-                startActivity(goToTarife);
-            }
-        });
+
 
     }
 

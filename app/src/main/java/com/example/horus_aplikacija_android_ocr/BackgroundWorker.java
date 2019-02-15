@@ -29,8 +29,8 @@ public class BackgroundWorker extends AsyncTask<String,Void,String> {
     @Override
     protected String doInBackground(String... params) {
         String type = params[0];
-        String login_url = "http://192.168.0.24/login.php";
-        String serverIp = "http://192.168.0.24/";
+        String login_url = "http://185.183.182.68/login.php";
+        String serverIp = "http://185.183.182.68/";
         if (type.equals("login")) {
             try {
                 String pin = params[1];
@@ -152,11 +152,10 @@ public class BackgroundWorker extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPostExecute(String result) {
-        alertDialog.setMessage(result);
-        alertDialog.show();
-
-
-
+        if(!result.contains("regex")) {
+            alertDialog.setMessage(result);
+            alertDialog.show();
+        }
     }
 
     @Override

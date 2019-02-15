@@ -1,6 +1,8 @@
 package com.example.horus_aplikacija_android_ocr;
 
+import android.app.AlertDialog;
 import android.app.LauncherActivity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.text.Line;
@@ -24,10 +27,25 @@ public class ListaBrojilaAct extends AppCompatActivity {
     int i,brojUredjaja;
     long idPritisnut = -1;
     boolean popunjeni[];
+    int zelena = Color.rgb(158,244,139);
+    int crvena = Color.rgb(249,129,129);
+    int plava = Color.rgb(140, 179, 242);
+    int prethodnaBojaSelektovanog = crvena;
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //SESIJA ZA LOGOVANJE, PIN ULOGOVANOG SE NALAZI U sessionManager.getUserDetail()
+
         SessionManager sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
+
+
+        //BACKGROUND WORKER UCITAVA BROJILA IZ POVEZUJE SE SA BAZOM
         BackgroundWorker backgroundWorker = new BackgroundWorker(this);
         try {
             backgroundWorker.execute("getDeviceIds").get(); //uzima deviceId iz base i cuva ih u result
@@ -41,6 +59,10 @@ public class ListaBrojilaAct extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Br uredjaja "+brojUredjaja, Toast.LENGTH_LONG).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_brojila);
+
+
+        final Intent opnCameraAct = new Intent(getApplicationContext(), OpenCameraAct.class);
+        // PRAVI DUGMAD
         LinearLayout llDugmad = findViewById(R.id.llDugmad);
         for(i = 1; i <= 5; i ++) {
             Button nb = new Button(getApplicationContext());
@@ -51,10 +73,9 @@ public class ListaBrojilaAct extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if(idPritisnut != -1) {
-                        String selektovaniDeviceId = items[(int)idPritisnut];
-                        Intent opnCameraAct = new Intent(getApplicationContext(), OpenCameraAct.class);
+                        ListView list=(ListView) findViewById(R.id.ListaBr);
+                        idPritisnut=list.getSelectedItemId();
                         opnCameraAct.putExtra("brTarifa", Integer.parseInt(((Button) findViewById(v.getId())).getText().toString()));
-                        opnCameraAct.putExtra("deviceId", selektovaniDeviceId);
                         startActivity(opnCameraAct);
                     }
                 }
@@ -62,50 +83,59 @@ public class ListaBrojilaAct extends AppCompatActivity {
             llDugmad.addView(nb);
         }
 
-       final ListView list=(ListView) findViewById(R.id.ListaBr);
-        ListAdapter adapter= new ArrayAdapter<String>(this,android.R.layout.simple_selectable_list_item,items);
-       list.setAdapter(adapter);
+        //STAVLJA ITEME U LISTU
+        final ListView list=(ListView) findViewById(R.id.ListaBr);
+        ListAdapter adapter= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_single_choice,items);
+        idPritisnut=list.getSelectedItemId();
+        list.setAdapter(adapter);
+
+        //MENJA selektovaniDeviceId i dodaje ga u opnCameraIntent
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (idPritisnut != id) {
                     if (idPritisnut != -1) {
                         View nv = list.getChildAt((int) idPritisnut);
-                        nv.setBackgroundColor(Color.WHITE);
                     }
                     idPritisnut = id;
-                   // Toast.makeText(getApplicationContext(), Long.toString(idPritisnut), Toast.LENGTH_LONG).show();
-
-                    view.setBackgroundColor(Color.rgb(140, 179, 242));
+                    //Toast.makeText(getApplicationContext(), items[(int)idPritisnut]+" poz: "+idPritisnut, Toast.LENGTH_LONG).show();
+                    String selektovaniDeviceId=items[(int)idPritisnut];
+                    opnCameraAct.putExtra("deviceId", selektovaniDeviceId);
+                    opnCameraAct.putExtra("pozicijaPritisnutog", ""+idPritisnut);
                 } else {
-                    view.setBackgroundColor(Color.WHITE);
-
                     idPritisnut = -1;
                 }
             }
+
         });
+
+     //   obojSveCrveno();
     }
 
- /*
-   BOJI POPUNENE U ZELENO OSTALE U CRVENO
+
+    //IZVRSAVA SE SVAKI PUT KAD SE AKTIVITI PRIKAZE, BOJI PROCITANO POLJE U ZELENO
    @Override
     protected void onResume() {
         super.onResume();
         SessionManager sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
+
         try {
 
-
-            popunjeni = sessionManager.getPopunjeni();
-            ListView list=(ListView) findViewById(R.id.ListaBr);
-            for(int i =0;i<brojUredjaja-1;i++) {
-                View nv = list.getChildAt(i);
-                if (popunjeni[i] == true) {
-                    nv.setBackgroundColor(Color.green(1));
-                } else {
-                    nv.setBackgroundColor(Color.red(1));
-                }
+            AlertDialog alertDialog;
+            alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle("onResume");
+            int poslednjiPopunjen = sessionManager.getPosljednjiOcitan();
+            //alertDialog.setMessage(""+ sessionManager.getPosljednjiOcitan());
+            if(poslednjiPopunjen!=-1) {
+                //alertDialog.show();
+                ListView list = (ListView) findViewById(R.id.ListaBr);
+                View nv = list.getChildAt(poslednjiPopunjen);
+                nv.setBackgroundColor(zelena);
             }
+            /*TextView tv = (TextView) nv;
+            tv.setTextColor(plava);*/
+
 
         }
         catch (Exception e) {
@@ -114,7 +144,27 @@ public class ListaBrojilaAct extends AppCompatActivity {
 
         //Toast.makeText(getApplicationContext(), "OnResume", Toast.LENGTH_LONG).show();
     }
-*/
+
+    void obojSveCrveno()
+    {
+        AlertDialog alertDialog;
+        alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("ObojSveCrveno");
+
+        try {
+            ListView list=(ListView) findViewById(R.id.ListaBr);
+            View nv = list.getChildAt(0);
+            for(int i =0;i<brojUredjaja;i++)
+            {
+
+                nv.setBackgroundColor(crvena);
+            }
+        }
+        catch (Exception e) {
+            alertDialog.setMessage(e.getMessage());
+            alertDialog.show();
+        }
+    }
     String[] popuniListu(String rezultat)
     {
         String deviceIds[]=rezultat.split("regex");

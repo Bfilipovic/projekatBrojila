@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (backgroundWorker.result.equals("Login success!")) {
                     sessionManager.createSession(pin);
+                    sessionManager.postaviPoslednjiOcitan(-1);
                     startActivity(UlogujSeIntent);
                 }
 
