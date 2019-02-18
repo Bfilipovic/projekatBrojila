@@ -7,7 +7,7 @@
     tools:context=".OpenCameraAct">
 
     <LinearLayout
-        android:layout_width="395dp"
+        android:layout_width="391dp"
         android:layout_height="715dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -30,20 +30,22 @@
             android:id="@+id/imageViewSlika"
             android:layout_width="353dp"
             android:layout_height="247dp"
-            app:srcCompat="@android:drawable/ic_menu_report_image" />
+            app:srcCompat="@android:drawable/ic_menu_report_image"
+            />
 
         <Button
             android:id="@+id/btnTakePic"
-            android:layout_width="190dp"
+            android:layout_width="195dp"
             android:layout_height="wrap_content"
-            android:text="Slikaj"
+            android:text="Take picture"
             />
 
         <Button
             android:id="@+id/btnConfrim"
-            android:layout_width="190dp"
+            android:layout_width="195dp"
             android:layout_height="wrap_content"
-            android:text="Potvrdi" />
+            android:text="CONFIRM"
+            />
 
         <TextView
             android:id="@+id/tvTest"
