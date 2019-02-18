@@ -1,6 +1,7 @@
 package com.example.horus_aplikacija_android_ocr;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -39,9 +40,15 @@ public class MainActivity extends AppCompatActivity {
                 String status = backgroundWorker.getStatus().toString();
 
                 if (backgroundWorker.result.equals("Login success!")) {
-                    sessionManager.createSession(pin);
-                    sessionManager.postaviPoslednjiOcitan(-1);
-                    startActivity(UlogujSeIntent);
+                    try {
+                        sessionManager.createSession(pin);
+                        sessionManager.postaviPoslednjiOcitan(-1);
+                        startActivity(UlogujSeIntent);
+                    }
+                    catch (Exception e)
+                    {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
                 }
 
                 /*if(pin.equals("1234")){
