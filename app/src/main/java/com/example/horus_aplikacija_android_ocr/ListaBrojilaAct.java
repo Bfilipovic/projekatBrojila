@@ -43,7 +43,7 @@ public class ListaBrojilaAct extends AppCompatActivity {
 
         SessionManager sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
-
+        idPritisnut=-1;
 
         //BACKGROUND WORKER UCITAVA BROJILA IZ POVEZUJE SE SA BAZOM
         BackgroundWorker backgroundWorker = new BackgroundWorker(this);
@@ -56,13 +56,14 @@ public class ListaBrojilaAct extends AppCompatActivity {
         }
         final String items[] = popuniListu(backgroundWorker.result);
         brojUredjaja = items.length;
-        Toast.makeText(getApplicationContext(), "Br uredjaja "+brojUredjaja, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Number of devices: "+brojUredjaja, Toast.LENGTH_LONG).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_brojila);
 
 
         final Intent opnCameraAct = new Intent(getApplicationContext(), OpenCameraAct.class);
-        // PRAVI DUGMAD
+
+        // *******************PRAVI DUGMICE*********************
         LinearLayout llDugmad = findViewById(R.id.llDugmad);
         for(i = 1; i <= 5; i ++) {
             Button nb = new Button(getApplicationContext());
@@ -72,11 +73,16 @@ public class ListaBrojilaAct extends AppCompatActivity {
             nb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(idPritisnut != -1) {
+                    if(idPritisnut > -1) {
+
                         ListView list=(ListView) findViewById(R.id.ListaBr);
                         idPritisnut=list.getSelectedItemId();
                         opnCameraAct.putExtra("brTarifa", Integer.parseInt(((Button) findViewById(v.getId())).getText().toString()));
                         startActivity(opnCameraAct);
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(), "You must select a device from the list \n If a device is already selected, just click on it again", Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -127,19 +133,26 @@ public class ListaBrojilaAct extends AppCompatActivity {
             alertDialog.setTitle("onResume");
             int poslednjiPopunjen = sessionManager.getPosljednjiOcitan();
             //alertDialog.setMessage(""+ sessionManager.getPosljednjiOcitan());
+
+            // BOJI U ZELENO
             if(poslednjiPopunjen!=-1) {
                 //alertDialog.show();
                 ListView list = (ListView) findViewById(R.id.ListaBr);
                 View nv = list.getChildAt(poslednjiPopunjen);
                 nv.setBackgroundColor(zelena);
             }
-            /*TextView tv = (TextView) nv;
-            tv.setTextColor(plava);*/
+
+
+            ListView list = (ListView) findViewById(R.id.ListaBr);
+            int selektovani = list.getSelectedItemPosition();
+            sessionManager.postaviPoslednjiOcitan(selektovani);
+            idPritisnut = selektovani;
+
 
 
         }
         catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "OnResume "+e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Error "+e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         //Toast.makeText(getApplicationContext(), "OnResume", Toast.LENGTH_LONG).show();
@@ -170,8 +183,6 @@ public class ListaBrojilaAct extends AppCompatActivity {
         String deviceIds[]=rezultat.split("regex");
         return deviceIds;
     }
-
-
 
 
 }

@@ -44,7 +44,7 @@ public class TarifeAct extends AppCompatActivity {
             etTarifa.setId(i);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             LinearLayout.LayoutParams etparams = new LinearLayout.LayoutParams(900, LinearLayout.LayoutParams.WRAP_CONTENT);
-            tarifa.setText("Tarifa " + (i + 1) + ":");
+            tarifa.setText("Tariff " + (i + 1) + ":");
             tarifa.setTextSize(18);
             tarifa.setId(i);
             tarifa.setLayoutParams(params);
@@ -71,10 +71,11 @@ public class TarifeAct extends AppCompatActivity {
 
                     try {
                         tarifeLok[i]=tarifeEt[i].getText().toString();
+                        if (tarifeLok[i].isEmpty()) throw new Exception();
                     }
                     catch (Exception e)
                     {
-                        Toast.makeText(TarifeAct.this, "Popunite sva polja",
+                        Toast.makeText(TarifeAct.this, "You must fill all fields",
                                 Toast.LENGTH_LONG).show();
                     }
                 }
